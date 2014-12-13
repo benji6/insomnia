@@ -20,9 +20,16 @@ var radius = 16;
 var getPhi = function(i, rotation) {
 	return 2 * Math.PI / totalCubes * i + rotation;
 }
-var getCoords = function(phi, radius) {
-	x = Math.cos(phi) * radius;
-	y = Math.sin(phi) * radius;
+var getRotation = function(timeDiff) {
+	var angularFreq = .000005;
+	return angularFreq * timeDiff % (Math.PI * 2);
+}
+var rotation = 0;
+var getCoords = function(phi, radius, timeDiff) {
+	rotation += getRotation(timeDiff);
+	x = Math.cos(phi + rotation) * radius;
+	y = Math.sin(phi + rotation) * radius;
+	
 	return {
 		x: x,
 		y: y,
@@ -49,25 +56,19 @@ var times = (function() {
 	};
 }());
 
-var getRotation = function(timeDiff) {
-	var angularFreq = .0005;
-	return angularFreq * timeDiff % (Math.PI * 2);
-}
+
 
 function render() {
 	//dev- it's no longer rotating!!
+	requestAnimationFrame(render);
 	var coords;
-	var z;
 	var phi;
 	var timeDiff = times.lap();
-	requestAnimationFrame(render);
-	var rotation = getRotation(timeDiff);
-	var pulsationRate = .001;
+	//var pulsationRate = .001;
 	//var r = radius + 4 * Math.sin(timeDiff * pulsationRate);
 	for (var i = 0; i < totalCubes; i++) {
-		z = getPhi(i, rotation);
 		phi = getPhi(i, 0);
-		coords = getCoords(phi, radius);
+		coords = getCoords(phi, radius, timeDiff);
 		cubes[i].position.set(coords.x, coords.y, phi);
 		cubes[i].rotation.x += .1;
 		cubes[i].rotation.y += .03;
