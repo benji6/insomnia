@@ -5,6 +5,8 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+camera.position.z = 32;
+
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshBasicMaterial({
 	color: 0x00ff00,
@@ -14,32 +16,26 @@ var material = new THREE.MeshBasicMaterial({
 var cubes = [];
 var totalCubes = 32;
 var radius = 16;
-var x;
-var y;
-var phi;
-var rotation = 0;
+
 var getPhi = function(i, rotation) {
 	return 2 * Math.PI / totalCubes * i + rotation;
 }
-var computePosition = function(i, radius, rotation, z) {
-	if (!rotation) {
-		rotation = 0;
-	}
-	phi = getPhi(i, rotation);
+var getCoords = function(phi, radius) {
 	x = Math.cos(phi) * radius;
 	y = Math.sin(phi) * radius;
-	cubes[i].position.set(x, y, z);
-}
+	return {
+		x: x,
+		y: y,
+		z: phi
+	};
+};
+
+//initialise
 for (var i = 0; i < totalCubes; i++) {
 	cubes[i] = new THREE.Mesh(geometry, material);
-	computePosition(i, radius, 0, 0);
 	scene.add(cubes[i]);
 }
 
-camera.position.z = 32;
-
-
-var angularFreq = .0005;
 var times = (function() {
 	var then = new Date().getTime();
 	var now = new Date().getTime();
@@ -55,18 +51,26 @@ var times = (function() {
 		}
 	};
 }());
+
 var getRotation = function(timeDiff) {
+	var angularFreq = .0005;
 	return angularFreq * timeDiff % (Math.PI * 2);
 }
+
 function render() {
+	//dev- it's no longer rotating!!
+	var coords;
 	var z;
+	var phi;
 	times.lap();
 	requestAnimationFrame(render);
-	rotation = getRotation(times.diff());
+	var rotation = getRotation(times.diff());
 	var r = radius + 4 * Math.sin(times.now / 2048);
 	for (var i = 0; i < totalCubes; i++) {
 		z = getPhi(i, rotation);
-		computePosition(i, r, rotation, z);
+		phi = getPhi(i, 0);
+		coords = getCoords(phi, radius);
+		cubes[i].position.set(coords.x, coords.y, phi);
 		cubes[i].rotation.x += .1;
 		cubes[i].rotation.y += .03;
 		cubes[i].rotation.z += .07;
