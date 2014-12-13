@@ -17,44 +17,60 @@ var radius = 16;
 var x;
 var y;
 var phi;
-var computePosition = function(i, radius, rotation) {
+var rotation = 0;
+var getPhi = function(i, rotation) {
+	return 2 * Math.PI / totalCubes * i + rotation;
+}
+var computePosition = function(i, radius, rotation, z) {
 	if (!rotation) {
 		rotation = 0;
 	}
-	phi = 2 * Math.PI / totalCubes * i + rotation;
+	phi = getPhi(i, rotation);
 	x = Math.cos(phi) * radius;
 	y = Math.sin(phi) * radius;
-	cubes[i].position.set(x, y, 0);
+	cubes[i].position.set(x, y, z);
 }
 for (var i = 0; i < totalCubes; i++) {
 	cubes[i] = new THREE.Mesh(geometry, material);
-	computePosition(i, radius, 0);
+	computePosition(i, radius, 0, 0);
 	scene.add(cubes[i]);
 }
 
 camera.position.z = 32;
 
-var rotation = 0;
+
 var angularFreq = .0005;
-var times = {
-	now: 0,
-	then: 0,
-	diff: function() {
-		return this.now - this.then;
-	}
-};
+var times = (function() {
+	var then = new Date().getTime();
+	var now = new Date().getTime();
+	
+	return {
+		now: now,
+		lap: function() {
+			then = now;
+			now = new Date().getTime();
+		},
+		diff: function() {
+			return now - then;
+		}
+	};
+}());
+var getRotation = function(timeDiff) {
+	return angularFreq * timeDiff % (Math.PI * 2);
+}
 function render() {
-	times.now = new Date().getTime();
+	var z;
+	times.lap();
 	requestAnimationFrame(render);
-	rotation -= angularFreq * times.diff();
+	rotation = getRotation(times.diff());
 	var r = radius + 4 * Math.sin(times.now / 2048);
 	for (var i = 0; i < totalCubes; i++) {
-		computePosition(i, r, rotation);
-		cubes[i].rotation.x +=.1;
+		z = getPhi(i, rotation);
+		computePosition(i, r, rotation, z);
+		cubes[i].rotation.x += .1;
 		cubes[i].rotation.y += .03;
 		cubes[i].rotation.z += .07;
 	}
 	renderer.render(scene, camera);
-	times.then = times.now;
 }
 render();
