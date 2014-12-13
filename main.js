@@ -41,12 +41,9 @@ var times = (function() {
 	var now = new Date().getTime();
 	
 	return {
-		now: now,
 		lap: function() {
 			then = now;
 			now = new Date().getTime();
-		},
-		diff: function() {
 			return now - then;
 		}
 	};
@@ -62,10 +59,11 @@ function render() {
 	var coords;
 	var z;
 	var phi;
-	times.lap();
+	var timeDiff = times.lap();
 	requestAnimationFrame(render);
-	var rotation = getRotation(times.diff());
-	var r = radius + 4 * Math.sin(times.now / 2048);
+	var rotation = getRotation(timeDiff);
+	var pulsationRate = .001;
+	//var r = radius + 4 * Math.sin(timeDiff * pulsationRate);
 	for (var i = 0; i < totalCubes; i++) {
 		z = getPhi(i, rotation);
 		phi = getPhi(i, 0);
