@@ -35,11 +35,19 @@ for (var i = 0; i < totalCubes; i++) {
 camera.position.z = 32;
 
 var rotation = 0;
+var angularFreq = .0005;
+var times = {
+	now: 0,
+	then: 0,
+	diff: function() {
+		return this.now - this.then;
+	}
+};
 function render() {
+	times.now = new Date().getTime();
 	requestAnimationFrame(render);
-	rotation -= .001;
-	var t = new Date().getTime()/2048;
-	var r = radius + 4 * Math.sin(t);
+	rotation -= angularFreq * times.diff();
+	var r = radius + 4 * Math.sin(times.now / 2048);
 	for (var i = 0; i < totalCubes; i++) {
 		computePosition(i, r, rotation);
 		cubes[i].rotation.x +=.1;
@@ -47,5 +55,6 @@ function render() {
 		cubes[i].rotation.z += .07;
 	}
 	renderer.render(scene, camera);
+	times.then = times.now;
 }
 render();
