@@ -18,6 +18,7 @@
   "homepage": "https://github.com/benji6/insomnia",
   "dependencies": {
     "browserify": "^7.0.1",
-    "three": "^0.69.0"
+    "three": "^0.69.0",
+    "tinytic": "^1.0.0"
   }
 }

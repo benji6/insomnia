@@ -1,4 +1,5 @@
-var THREE = require('three.js');
+var THREE = require('three');
+var tinytic = require('tinytic');
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -74,26 +75,12 @@ for (var i = 0; i < totalCubes; i++) {
 	scene.add(cubes[i]);
 }
 
-var stopWatch = (function() {
-	var then = new Date().getTime();
-	var now = new Date().getTime();
-	
-	return {
-		lap: function() {
-			then = now;
-			now = new Date().getTime();
-			return now - then;
-		}
-	};
-}());
-
-
 var phiThens = [];
 function render() {
 	requestAnimationFrame(render);
 	var coords;
 	var phi;
-	var timeDiff = stopWatch.lap();
+	var timeDiff = tinytic.toc();
 	//var pulsationRate = .001;
 	//var r = radius + 4 * Math.sin(timeDiff * pulsationRate);
 	for (var i = 0; i < totalCubes; i++) {
