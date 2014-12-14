@@ -1,0 +1,23 @@
+{
+  "name": "insomnia",
+  "version": "0.0.0",
+  "description": "Experimenting with and learning Three.js",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:benji6/insomnia.git"
+  },
+  "author": "benji6",
+  "license": "GNU GPL v3",
+  "bugs": {
+    "url": "https://github.com/benji6/insomnia/issues"
+  },
+  "homepage": "https://github.com/benji6/insomnia",
+  "dependencies": {
+    "browserify": "^7.0.1",
+    "three": "^0.69.0"
+  }
+}
