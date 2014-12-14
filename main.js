@@ -35,13 +35,7 @@ var getPhi = function(i, timeDiff, phiThen) {
 };
 
 var getZ = function(phi) {
-	var z;
-	if (phi < Math.PI) {
-		z = 0;
-	}
-	if (phi > Math.PI) {
-		z = 5;
-	}
+	var z = 8 * Math.sin(phi * 8);
 	return z;
 }
 
