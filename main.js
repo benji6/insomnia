@@ -8,13 +8,22 @@ document.body.appendChild(renderer.domElement);
 camera.position.z = 32;
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
-var material = new THREE.MeshBasicMaterial({
-	color: 0x00ff00,
-	wireframe: true
-});
+
+var material;
+var createMaterial = function() {
+	var material = new THREE.MeshBasicMaterial({
+		color: 0x00ff00,
+		wireframe: true
+	});
+	material.color.setRGB(Math.random(), Math.random(), Math.random());
+	
+	return material;
+}
+
+
 
 var cubes = [];
-var totalCubes = 32;
+var totalCubes = 64;
 var radius = 16;
 
 var getPhi = function(i, timeDiff, phiThen) {
@@ -53,6 +62,7 @@ var getCoords = function(phi, radius, timeDiff) {
 
 //initialise
 for (var i = 0; i < totalCubes; i++) {
+	material = createMaterial();
 	cubes[i] = new THREE.Mesh(geometry, material);
 	scene.add(cubes[i]);
 }
