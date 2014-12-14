@@ -17,23 +17,43 @@ var cubes = [];
 var totalCubes = 32;
 var radius = 16;
 
-var getPhi = function(i, rotation) {
-	return 2 * Math.PI / totalCubes * i + rotation;
+var getPhi = function(i, timeDiff, phiThen) {
+	//if getting initial phi
+	if (phiThen === undefined) {
+		return 2 * Math.PI / totalCubes * i;
+	}
+
+	var angularFreq = .0005;
+	var rotation = angularFreq * timeDiff;
+	var phiNow = phiThen + rotation;
+	//keep phi between 0 and 2PI
+	if (phiNow > 2 * Math.PI) {
+		phiNow = phiNow % Math.PI;
+	}
+
+	return phiNow;
+};
+
+var getZ = function(phi) {
+	var z;
+	if (phi < Math.PI) {
+		z = 0;
+	}
+	if (phi > Math.PI) {
+		z = 5;
+	}
+	return z;
 }
-var getRotation = function(timeDiff) {
-	var angularFreq = .000005;
-	return angularFreq * timeDiff % (Math.PI * 2);
-}
-var rotation = 0;
+
 var getCoords = function(phi, radius, timeDiff) {
-	rotation += getRotation(timeDiff);
-	x = Math.cos(phi + rotation) * radius;
-	y = Math.sin(phi + rotation) * radius;
-	
+	x = Math.cos(phi) * radius;
+	y = Math.sin(phi) * radius;
+	z = getZ(phi);
+
 	return {
 		x: x,
 		y: y,
-		z: phi
+		z: z
 	};
 };
 
@@ -43,7 +63,7 @@ for (var i = 0; i < totalCubes; i++) {
 	scene.add(cubes[i]);
 }
 
-var times = (function() {
+var stopWatch = (function() {
 	var then = new Date().getTime();
 	var now = new Date().getTime();
 	
@@ -57,19 +77,19 @@ var times = (function() {
 }());
 
 
-
+var phiThens = [];
 function render() {
-	//dev- it's no longer rotating!!
 	requestAnimationFrame(render);
 	var coords;
 	var phi;
-	var timeDiff = times.lap();
+	var timeDiff = stopWatch.lap();
 	//var pulsationRate = .001;
 	//var r = radius + 4 * Math.sin(timeDiff * pulsationRate);
 	for (var i = 0; i < totalCubes; i++) {
-		phi = getPhi(i, 0);
+		phi = getPhi(i, timeDiff, phiThens[i]);
+		phiThens[i] = phi;
 		coords = getCoords(phi, radius, timeDiff);
-		cubes[i].position.set(coords.x, coords.y, phi);
+		cubes[i].position.set(coords.x, coords.y, coords.z);
 		cubes[i].rotation.x += .1;
 		cubes[i].rotation.y += .03;
 		cubes[i].rotation.z += .07;
