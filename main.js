@@ -1,27 +1,31 @@
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 64;
 var renderer = new THREE.WebGLRenderer();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-camera.position.z = 32;
-
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 
-var material;
 var createMaterial = function() {
-	var material = new THREE.MeshBasicMaterial({
-		color: 0x00ff00,
-		wireframe: true
+	var r = Math.floor(Math.random() * 256);
+	var g = Math.floor(Math.random() * 256);
+	var b = Math.floor(Math.random() * 256);
+	var material = new THREE.MeshLambertMaterial({
+		color: 'rgb(' + r + ', ' + g + ', ' + b + ')'
 	});
-	material.color.setRGB(Math.random(), Math.random(), Math.random());
 	
 	return material;
 }
 
+var ambientLight = new THREE.AmbientLight(0x000044);
+scene.add(ambientLight);
 
-
+var directionalLight = new THREE.DirectionalLight(0xffffff);
+directionalLight.position.set(16, 16, 16).normalize();
+scene.add(directionalLight);
+      
 var cubes = [];
 var totalCubes = 64;
 var radius = 16;
@@ -61,6 +65,7 @@ var getCoords = function(phi, radius, timeDiff) {
 };
 
 //initialise
+var material;
 for (var i = 0; i < totalCubes; i++) {
 	material = createMaterial();
 	cubes[i] = new THREE.Mesh(geometry, material);
