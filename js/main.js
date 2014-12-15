@@ -8,6 +8,7 @@ var renderer = new THREE.WebGLRenderer();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+renderer.domElement.className = "fullscreen";
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -75,8 +76,12 @@ for (var i = 0; i < totalCubes; i++) {
 	scene.add(cubes[i]);
 }
 
+var isRunning;
 var phiThens = [];
 function render() {
+	if (!isRunning) {
+		return;
+	}
 	requestAnimationFrame(render);
 	var coords;
 	var phi;
@@ -94,4 +99,19 @@ function render() {
 	}
 	renderer.render(scene, camera);
 }
-render();
+
+var run = function() {
+	isRunning = true;
+	document.body.appendChild(renderer.domElement);
+	render();
+}
+var off = function() {
+	isRunning = false;
+	document.body.removeChild(renderer.domElement);
+}
+
+window.insomnia = {
+	on: run,
+	off: off
+};
+window.insomnia.on();
