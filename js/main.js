@@ -21,7 +21,7 @@ var createMaterial = function() {
 	});
 	
 	return material;
-}
+};
 
 var ambientLight = new THREE.AmbientLight(0x000044);
 scene.add(ambientLight);
@@ -54,7 +54,7 @@ var getPhi = function(i, timeDiff, phiThen) {
 var getZ = function(phi) {
 	var z = 8 * Math.sin(phi * 8);
 	return z;
-}
+};
 
 var getCoords = function(phi, radius, timeDiff) {
 	x = Math.cos(phi) * radius;
@@ -104,11 +104,11 @@ var run = function() {
 	isRunning = true;
 	document.body.appendChild(renderer.domElement);
 	render();
-}
+};
 var off = function() {
 	isRunning = false;
 	document.body.removeChild(renderer.domElement);
-}
+};
 
 window.insomnia = {
 	on: run,
