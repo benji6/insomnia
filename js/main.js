@@ -85,7 +85,7 @@ function render() {
 	requestAnimationFrame(render);
 	var coords;
 	var phi;
-	var timeDiff = tinytic.toc();
+	var timeDiff = tinytic.toc(500);
 	//var pulsationRate = .001;
 	//var r = radius + 4 * Math.sin(timeDiff * pulsationRate);
 	for (var i = 0; i < totalCubes; i++) {
