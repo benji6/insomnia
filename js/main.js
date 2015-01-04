@@ -1,7 +1,7 @@
 var THREE = require('three');
 var tinytic = require('tinytic');
 
-var sphere = require('./lib/sphere.js');
+var Sphere = require('./lib/Sphere.js');
 var light = require('./lib/light.js');
 
 var scene = new THREE.Scene();
@@ -26,7 +26,7 @@ var createMaterial = function() {
 	return material;
 };
 
-scene.add(sphere);
+scene.add(Sphere());
 
 scene.add(light.ambientLight);
 scene.add(light.directionalLight);
