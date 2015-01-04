@@ -15,10 +15,6 @@ renderer.domElement.className = "fullscreen";
 document.body.appendChild(renderer.domElement);
 
 var sphere = Sphere();
-scene.add(sphere);
-scene.add(light.ambientLight);
-scene.add(light.directionalLight);
-
 var cubes = [];
 var totalCubes = 64;
 var orbitRadius = 16;
@@ -27,6 +23,9 @@ for (var i = 0; i < totalCubes; i++) {
 	cubes[i] = Cube();
 	scene.add(cubes[i]);
 }
+scene.add(sphere);
+scene.add(light.ambientLight);
+scene.add(light.directionalLight);
 
 var getPhi = function(i, timeDiff, phiThen) {
 	//if getting initial phi
@@ -60,11 +59,8 @@ var getCoords = function(phi, orbitRadius, timeDiff) {
 
 var isRunning;
 var phiThens = [];
-function render() {
-	if (!isRunning) {
-		return;
-	}
-	requestAnimationFrame(render);
+
+var computeModel = function() {
 	var coords;
 	var phi;
 	var timeDiff = tinytic.toc(500);
@@ -80,21 +76,27 @@ function render() {
 		cubes[i].rotation.z += 0.07;
 	}
 	sphere.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
-	renderer.render(scene, camera);
-}
+};
 
-var run = function() {
-	isRunning = true;
-	document.body.appendChild(renderer.domElement);
-	render();
+var animationLoop = function animationLoop() {
+	if (!isRunning) {
+		return;
+	}
+	requestAnimationFrame(animationLoop);
+	computeModel();
+	renderer.render(scene, camera);
 };
-var off = function() {
-	isRunning = false;
-	document.body.removeChild(renderer.domElement);
-};
+
 
 window.insomnia = {
-	on: run,
-	off: off
+	on: function() {
+		isRunning = true;
+		document.body.appendChild(renderer.domElement);
+		animationLoop();
+	},
+	off: function() {
+		isRunning = false;
+		document.body.removeChild(renderer.domElement);
+	}
 };
 window.insomnia.on();
