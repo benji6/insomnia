@@ -61,7 +61,7 @@ scene.add(light.directionalLight);
 
 var cubes = [];
 var totalCubes = 64;
-var radius = 16;
+var orbitRadius = 16;
 
 var getPhi = function(i, timeDiff, phiThen) {
 	//if getting initial phi
@@ -85,9 +85,9 @@ var getZ = function(phi) {
 	return z;
 };
 
-var getCoords = function(phi, radius, timeDiff) {
-	x = Math.cos(phi) * radius;
-	y = Math.sin(phi) * radius;
+var getCoords = function(phi, orbitRadius, timeDiff) {
+	x = Math.cos(phi) * orbitRadius;
+	y = Math.sin(phi) * orbitRadius;
 	z = getZ(phi);
 
 	return {
@@ -113,11 +113,11 @@ function render() {
 	var phi;
 	var timeDiff = tinytic.toc(500);
 	//var pulsationRate = .001;
-	//var r = radius + 4 * Math.sin(timeDiff * pulsationRate);
+	//var r = orbitRadius + 4 * Math.sin(timeDiff * pulsationRate);
 	for (var i = 0; i < totalCubes; i++) {
 		phi = getPhi(i, timeDiff, phiThens[i]);
 		phiThens[i] = phi;
-		coords = getCoords(phi, radius, timeDiff);
+		coords = getCoords(phi, orbitRadius, timeDiff);
 		cubes[i].position.set(coords.x, coords.y, coords.z);
 		cubes[i].rotation.x += 0.1;
 		cubes[i].rotation.y += 0.03;
