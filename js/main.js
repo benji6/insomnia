@@ -1,6 +1,8 @@
 var THREE = require('three');
 var tinytic = require('tinytic');
 
+var sphere = require('./lib/sphere.js');
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 64;
@@ -29,6 +31,15 @@ scene.add(ambientLight);
 var directionalLight = new THREE.DirectionalLight(0xffffff);
 directionalLight.position.set(16, 16, 16).normalize();
 scene.add(directionalLight);
+
+
+
+scene.add(sphere);
+
+
+
+
+
 
 var cubes = [];
 var totalCubes = 64;
