@@ -1,6 +1,7 @@
 var THREE = require('three');
 var tinytic = require('tinytic');
 
+var Cube = require('./lib/Cube.js');
 var Sphere = require('./lib/Sphere.js');
 var light = require('./lib/light.js');
 
@@ -12,19 +13,6 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.domElement.className = "fullscreen";
-
-var geometry = new THREE.BoxGeometry(1, 1, 1);
-
-var createMaterial = function() {
-	var r = Math.floor(Math.random() * 256);
-	var g = Math.floor(Math.random() * 256);
-	var b = Math.floor(Math.random() * 256);
-	var material = new THREE.MeshLambertMaterial({
-		color: 'rgb(' + r + ', ' + g + ', ' + b + ')'
-	});
-
-	return material;
-};
 
 scene.add(Sphere());
 
@@ -70,11 +58,8 @@ var getCoords = function(phi, radius, timeDiff) {
 	};
 };
 
-//initialise
-var material;
 for (var i = 0; i < totalCubes; i++) {
-	material = createMaterial();
-	cubes[i] = new THREE.Mesh(geometry, material);
+	cubes[i] = Cube();
 	scene.add(cubes[i]);
 }
 

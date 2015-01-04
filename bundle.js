@@ -1,6 +1,24 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var THREE = require('three');
 
+var geometry = new THREE.BoxGeometry(1, 1, 1);
+
+var createMaterial = function() {
+  var r = Math.floor(Math.random() * 256);
+  var g = Math.floor(Math.random() * 256);
+  var b = Math.floor(Math.random() * 256);
+  return new THREE.MeshLambertMaterial({
+    color: 'rgb(' + r + ', ' + g + ', ' + b + ')'
+  });
+};
+
+module.exports = function() {
+  return new THREE.Mesh(geometry, createMaterial());
+};
+
+},{"three":5}],2:[function(require,module,exports){
+var THREE = require('three');
+
 var sphereMaterial = new THREE.MeshPhongMaterial({
   color: 0xCCEE00
 });
@@ -9,7 +27,7 @@ module.exports = function() {
   return new THREE.Mesh(new THREE.SphereGeometry(8, 32, 32),sphereMaterial);
 };
 
-},{"three":4}],2:[function(require,module,exports){
+},{"three":5}],3:[function(require,module,exports){
 var THREE = require('three');
 
 var directionalLight = new THREE.DirectionalLight(0xffffff);
@@ -18,10 +36,11 @@ directionalLight.position.set(16, 16, 16).normalize();
 module.exports.ambientLight = new THREE.AmbientLight(0x000044);
 module.exports.directionalLight = directionalLight;
 
-},{"three":4}],3:[function(require,module,exports){
+},{"three":5}],4:[function(require,module,exports){
 var THREE = require('three');
 var tinytic = require('tinytic');
 
+var Cube = require('./lib/Cube.js');
 var Sphere = require('./lib/Sphere.js');
 var light = require('./lib/light.js');
 
@@ -33,19 +52,6 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.domElement.className = "fullscreen";
-
-var geometry = new THREE.BoxGeometry(1, 1, 1);
-
-var createMaterial = function() {
-	var r = Math.floor(Math.random() * 256);
-	var g = Math.floor(Math.random() * 256);
-	var b = Math.floor(Math.random() * 256);
-	var material = new THREE.MeshLambertMaterial({
-		color: 'rgb(' + r + ', ' + g + ', ' + b + ')'
-	});
-
-	return material;
-};
 
 scene.add(Sphere());
 
@@ -91,11 +97,8 @@ var getCoords = function(phi, radius, timeDiff) {
 	};
 };
 
-//initialise
-var material;
 for (var i = 0; i < totalCubes; i++) {
-	material = createMaterial();
-	cubes[i] = new THREE.Mesh(geometry, material);
+	cubes[i] = Cube();
 	scene.add(cubes[i]);
 }
 
@@ -139,7 +142,7 @@ window.insomnia = {
 };
 window.insomnia.on();
 
-},{"./lib/Sphere.js":1,"./lib/light.js":2,"three":4,"tinytic":5}],4:[function(require,module,exports){
+},{"./lib/Cube.js":1,"./lib/Sphere.js":2,"./lib/light.js":3,"three":5,"tinytic":6}],5:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -34884,7 +34887,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var getNow = Date.now || function() {return new Date().getTime();};
 
 var t0 = getNow(),
@@ -34911,4 +34914,4 @@ module.exports.reset = function() {
 	t0 = then = now = getNow();
 };
 
-},{}]},{},[3]);
+},{}]},{},[4]);
