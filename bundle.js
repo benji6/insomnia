@@ -1,18 +1,27 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var THREE = require('three');
 
-// create the sphere's material
+var directionalLight = new THREE.DirectionalLight(0xffffff);
+directionalLight.position.set(16, 16, 16).normalize();
+
+module.exports.ambientLight = new THREE.AmbientLight(0x000044);
+module.exports.directionalLight = directionalLight;
+
+},{"three":4}],2:[function(require,module,exports){
+var THREE = require('three');
+
 var sphereMaterial = new THREE.MeshPhongMaterial({
   color: 0xCCEE00
 });
 
 module.exports = new THREE.Mesh(new THREE.SphereGeometry(8, 32, 32),sphereMaterial);
 
-},{"three":3}],2:[function(require,module,exports){
+},{"three":4}],3:[function(require,module,exports){
 var THREE = require('three');
 var tinytic = require('tinytic');
 
 var sphere = require('./lib/sphere.js');
+var light = require('./lib/light.js');
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -36,20 +45,10 @@ var createMaterial = function() {
 	return material;
 };
 
-var ambientLight = new THREE.AmbientLight(0x000044);
-scene.add(ambientLight);
-
-var directionalLight = new THREE.DirectionalLight(0xffffff);
-directionalLight.position.set(16, 16, 16).normalize();
-scene.add(directionalLight);
-
-
-
 scene.add(sphere);
 
-
-
-
+scene.add(light.ambientLight);
+scene.add(light.directionalLight);
 
 
 var cubes = [];
@@ -138,7 +137,7 @@ window.insomnia = {
 };
 window.insomnia.on();
 
-},{"./lib/sphere.js":1,"three":3,"tinytic":4}],3:[function(require,module,exports){
+},{"./lib/light.js":1,"./lib/sphere.js":2,"three":4,"tinytic":5}],4:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -34883,7 +34882,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var getNow = Date.now || function() {return new Date().getTime();};
 
 var t0 = getNow(),
@@ -34910,4 +34909,4 @@ module.exports.reset = function() {
 	t0 = then = now = getNow();
 };
 
-},{}]},{},[2]);
+},{}]},{},[3]);

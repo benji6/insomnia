@@ -1,6 +1,5 @@
 var THREE = require('three');
 
-// create the sphere's material
 var sphereMaterial = new THREE.MeshPhongMaterial({
   color: 0xCCEE00
 });

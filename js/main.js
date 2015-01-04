@@ -2,6 +2,7 @@ var THREE = require('three');
 var tinytic = require('tinytic');
 
 var sphere = require('./lib/sphere.js');
+var light = require('./lib/light.js');
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -25,20 +26,10 @@ var createMaterial = function() {
 	return material;
 };
 
-var ambientLight = new THREE.AmbientLight(0x000044);
-scene.add(ambientLight);
-
-var directionalLight = new THREE.DirectionalLight(0xffffff);
-directionalLight.position.set(16, 16, 16).normalize();
-scene.add(directionalLight);
-
-
-
 scene.add(sphere);
 
-
-
-
+scene.add(light.ambientLight);
+scene.add(light.directionalLight);
 
 
 var cubes = [];
