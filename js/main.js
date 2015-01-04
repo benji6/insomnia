@@ -14,7 +14,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.domElement.className = "fullscreen";
 document.body.appendChild(renderer.domElement);
 
-scene.add(Sphere());
+var sphere = Sphere();
+scene.add(sphere);
 scene.add(light.ambientLight);
 scene.add(light.directionalLight);
 
@@ -78,6 +79,7 @@ function render() {
 		cubes[i].rotation.y += 0.03;
 		cubes[i].rotation.z += 0.07;
 	}
+	sphere.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
 	renderer.render(scene, camera);
 }
 
