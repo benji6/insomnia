@@ -50,18 +50,21 @@ camera.position.z = 64;
 var renderer = new THREE.WebGLRenderer();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 renderer.domElement.className = "fullscreen";
+document.body.appendChild(renderer.domElement);
 
 scene.add(Sphere());
-
 scene.add(light.ambientLight);
 scene.add(light.directionalLight);
-
 
 var cubes = [];
 var totalCubes = 64;
 var orbitRadius = 16;
+
+for (var i = 0; i < totalCubes; i++) {
+	cubes[i] = Cube();
+	scene.add(cubes[i]);
+}
 
 var getPhi = function(i, timeDiff, phiThen) {
 	//if getting initial phi
@@ -86,21 +89,12 @@ var getZ = function(phi) {
 };
 
 var getCoords = function(phi, orbitRadius, timeDiff) {
-	x = Math.cos(phi) * orbitRadius;
-	y = Math.sin(phi) * orbitRadius;
-	z = getZ(phi);
-
 	return {
-		x: x,
-		y: y,
-		z: z
+		x: Math.cos(phi) * orbitRadius,
+		y: Math.sin(phi) * orbitRadius,
+		z: getZ(phi)
 	};
 };
-
-for (var i = 0; i < totalCubes; i++) {
-	cubes[i] = Cube();
-	scene.add(cubes[i]);
-}
 
 var isRunning;
 var phiThens = [];
