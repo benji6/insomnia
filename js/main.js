@@ -19,7 +19,7 @@ var createMaterial = function() {
 	var material = new THREE.MeshLambertMaterial({
 		color: 'rgb(' + r + ', ' + g + ', ' + b + ')'
 	});
-	
+
 	return material;
 };
 
@@ -29,7 +29,7 @@ scene.add(ambientLight);
 var directionalLight = new THREE.DirectionalLight(0xffffff);
 directionalLight.position.set(16, 16, 16).normalize();
 scene.add(directionalLight);
-      
+
 var cubes = [];
 var totalCubes = 64;
 var radius = 16;
@@ -40,7 +40,7 @@ var getPhi = function(i, timeDiff, phiThen) {
 		return 2 * Math.PI / totalCubes * i;
 	}
 
-	var angularFreq = .0005;
+	var angularFreq = 0.0005;
 	var rotation = angularFreq * timeDiff;
 	var phiNow = phiThen + rotation;
 	//keep phi between 0 and 2PI
@@ -93,9 +93,9 @@ function render() {
 		phiThens[i] = phi;
 		coords = getCoords(phi, radius, timeDiff);
 		cubes[i].position.set(coords.x, coords.y, coords.z);
-		cubes[i].rotation.x += .1;
-		cubes[i].rotation.y += .03;
-		cubes[i].rotation.z += .07;
+		cubes[i].rotation.x += 0.1;
+		cubes[i].rotation.y += 0.03;
+		cubes[i].rotation.z += 0.07;
 	}
 	renderer.render(scene, camera);
 }
