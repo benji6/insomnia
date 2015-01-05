@@ -1,13 +1,24 @@
 var THREE = require('three');
 
-var geometry = new THREE.SphereGeometry(8, 32, 32);
+var geometry = new THREE.SphereGeometry(4, 32, 32);
 
-var vertexShader = 'varying vec3 vNormal;' +
+var attributes = {
+  displacement: {
+    type: 'f', // a float
+    value: [] // an empty array
+  }
+};
+
+var vertexShader = 'attribute float displacement;' +
+  'varying vec3 vNormal;' +
   'void main() {' +
     'vNormal = normal;' +
+    'vec3 newPosition = position + ' +
+      'normal *' +
+      'vec3(displacement);' +
     'gl_Position = projectionMatrix *' +
       'modelViewMatrix *' +
-      'vec4(position,1.0);' +
+      'vec4(newPosition,1.0);' +
   '}';
 
 var fragmentShader = 'varying vec3 vNormal;' +
@@ -18,10 +29,17 @@ var fragmentShader = 'varying vec3 vNormal;' +
     'gl_FragColor = vec4(dProd, dProd, dProd, 1.0);' +
   '}';
 
+console.log(geometry.vertices.length);
+for(var v = 0; v < geometry.vertices.length; v++) {
+  attributes.displacement.value.push((1 - Math.random()) * 2);
+}
+
 var shaderMaterial = new THREE.ShaderMaterial({
+  attributes: attributes,
   vertexShader: vertexShader,
   fragmentShader: fragmentShader
 });
+
 
 module.exports = function() {
   return new THREE.Mesh(geometry, shaderMaterial);
