@@ -16,7 +16,7 @@ module.exports = function() {
   return new THREE.Mesh(geometry, createMaterial());
 };
 
-},{"three":5}],2:[function(require,module,exports){
+},{"three":6}],2:[function(require,module,exports){
 var THREE = require('three');
 
 var sphereMaterial = new THREE.MeshPhongMaterial({
@@ -27,7 +27,35 @@ module.exports = function() {
   return new THREE.Mesh(new THREE.SphereGeometry(8, 32, 32),sphereMaterial);
 };
 
-},{"three":5}],3:[function(require,module,exports){
+},{"three":6}],3:[function(require,module,exports){
+var phiThens = [];
+var getCoords = function(phi, orbitRadius) {
+  return {
+    x: Math.cos(phi) * orbitRadius,
+    y: Math.sin(phi) * orbitRadius,
+    z: Math.sin(phi * 8) * 8
+  };
+};
+module.exports = function(i, dT, totalCubes, orbitRadius) {
+  var phiThen = phiThens[i];
+  var phiNow;
+  //if getting initial phi
+  if (phiThen === undefined) {
+    phiNow = phiThens[i] = 2 * Math.PI / totalCubes * i;
+    return getCoords(phiNow, orbitRadius);
+  }
+  var angularFreq = 0.0005;
+  var rotation = angularFreq * dT;
+  phiNow = phiThen + rotation;
+  //keep phi between 0 and 2PI
+  if (phiNow > 2 * Math.PI) {
+    phiNow = phiNow % Math.PI;
+  }
+  phiThens[i] = phiNow;
+  return getCoords(phiNow, orbitRadius);
+};
+
+},{}],4:[function(require,module,exports){
 var THREE = require('three');
 
 var directionalLight = new THREE.DirectionalLight(0xffffff);
@@ -36,13 +64,14 @@ directionalLight.position.set(8, 8, 4).normalize();
 module.exports.ambientLight = new THREE.AmbientLight(0x000044);
 module.exports.directionalLight = directionalLight;
 
-},{"three":5}],4:[function(require,module,exports){
+},{"three":6}],5:[function(require,module,exports){
 var THREE = require('three');
 var tinytic = require('tinytic');
 
 var Cube = require('./lib/Cube.js');
 var Sphere = require('./lib/Sphere.js');
 var light = require('./lib/light.js');
+var computeCubePosition = require('./lib/computeCubePosition.js');
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -66,49 +95,15 @@ scene.add(sphere);
 scene.add(light.ambientLight);
 scene.add(light.directionalLight);
 
-var getPhi = function(i, timeDiff, phiThen) {
-	//if getting initial phi
-	if (phiThen === undefined) {
-		return 2 * Math.PI / totalCubes * i;
-	}
-
-	var angularFreq = 0.0005;
-	var rotation = angularFreq * timeDiff;
-	var phiNow = phiThen + rotation;
-	//keep phi between 0 and 2PI
-	if (phiNow > 2 * Math.PI) {
-		phiNow = phiNow % Math.PI;
-	}
-
-	return phiNow;
-};
-
-var getZ = function(phi) {
-	var z = 8 * Math.sin(phi * 8);
-	return z;
-};
-
-var getCoords = function(phi, orbitRadius, timeDiff) {
-	return {
-		x: Math.cos(phi) * orbitRadius,
-		y: Math.sin(phi) * orbitRadius,
-		z: getZ(phi)
-	};
-};
-
 var isRunning;
-var phiThens = [];
 
 var computeModel = function() {
+	//dev need to start using tinytic.toc(500) for rotation etc
 	var coords;
 	var phi;
-	var timeDiff = tinytic.toc(500);
-	//var pulsationRate = .001;
-	//var r = orbitRadius + 4 * Math.sin(timeDiff * pulsationRate);
+	var dT = tinytic.toc(500);
 	for (var i = 0; i < totalCubes; i++) {
-		phi = getPhi(i, timeDiff, phiThens[i]);
-		phiThens[i] = phi;
-		coords = getCoords(phi, orbitRadius, timeDiff);
+		coords = computeCubePosition(i, dT, totalCubes, orbitRadius);
 		cubes[i].position.set(coords.x, coords.y, coords.z);
 		cubes[i].rotation.x += 0.1;
 		cubes[i].rotation.y += 0.03;
@@ -140,7 +135,7 @@ window.insomnia = {
 };
 window.insomnia.on();
 
-},{"./lib/Cube.js":1,"./lib/Sphere.js":2,"./lib/light.js":3,"three":5,"tinytic":6}],5:[function(require,module,exports){
+},{"./lib/Cube.js":1,"./lib/Sphere.js":2,"./lib/computeCubePosition.js":3,"./lib/light.js":4,"three":6,"tinytic":7}],6:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -34885,7 +34880,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var getNow = Date.now || function() {return new Date().getTime();};
 
 var t0 = getNow(),
@@ -34912,4 +34907,4 @@ module.exports.reset = function() {
 	t0 = then = now = getNow();
 };
 
-},{}]},{},[4]);
+},{}]},{},[5]);

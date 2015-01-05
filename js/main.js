@@ -4,6 +4,7 @@ var tinytic = require('tinytic');
 var Cube = require('./lib/Cube.js');
 var Sphere = require('./lib/Sphere.js');
 var light = require('./lib/light.js');
+var computeCubePosition = require('./lib/computeCubePosition.js');
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -27,49 +28,15 @@ scene.add(sphere);
 scene.add(light.ambientLight);
 scene.add(light.directionalLight);
 
-var getPhi = function(i, timeDiff, phiThen) {
-	//if getting initial phi
-	if (phiThen === undefined) {
-		return 2 * Math.PI / totalCubes * i;
-	}
-
-	var angularFreq = 0.0005;
-	var rotation = angularFreq * timeDiff;
-	var phiNow = phiThen + rotation;
-	//keep phi between 0 and 2PI
-	if (phiNow > 2 * Math.PI) {
-		phiNow = phiNow % Math.PI;
-	}
-
-	return phiNow;
-};
-
-var getZ = function(phi) {
-	var z = 8 * Math.sin(phi * 8);
-	return z;
-};
-
-var getCoords = function(phi, orbitRadius, timeDiff) {
-	return {
-		x: Math.cos(phi) * orbitRadius,
-		y: Math.sin(phi) * orbitRadius,
-		z: getZ(phi)
-	};
-};
-
 var isRunning;
-var phiThens = [];
 
 var computeModel = function() {
+	//dev need to start using tinytic.toc(500) for rotation etc
 	var coords;
 	var phi;
-	var timeDiff = tinytic.toc(500);
-	//var pulsationRate = .001;
-	//var r = orbitRadius + 4 * Math.sin(timeDiff * pulsationRate);
+	var dT = tinytic.toc(500);
 	for (var i = 0; i < totalCubes; i++) {
-		phi = getPhi(i, timeDiff, phiThens[i]);
-		phiThens[i] = phi;
-		coords = getCoords(phi, orbitRadius, timeDiff);
+		coords = computeCubePosition(i, dT, totalCubes, orbitRadius);
 		cubes[i].position.set(coords.x, coords.y, coords.z);
 		cubes[i].rotation.x += 0.1;
 		cubes[i].rotation.y += 0.03;
