@@ -15,7 +15,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.domElement.className = "fullscreen";
 document.body.appendChild(renderer.domElement);
 
-var sphere = Sphere();
+var sphere = Sphere.sphere;
 var cubes = [];
 var totalCubes = 64;
 var orbitRadius = 16;
@@ -41,6 +41,10 @@ var computeModel = function() {
 		cubes[i].rotation.z += dT / 256 * 0.7;
 	}
 	sphere.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
+	Sphere.compute(tinytic.total() / 12288);
+	sphere.rotation.x += dT / 256 * 0.13;
+	sphere.rotation.y += dT / 256 * 0.06;
+	sphere.rotation.yz += dT / 256 * 0.1;
 };
 
 var animationLoop = function animationLoop() {

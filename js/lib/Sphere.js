@@ -8,14 +8,21 @@ var attributes = {
     value: [] // an empty array
   }
 };
+var uniforms = {
+  amplitude: {
+    type: 'f', // a float
+    value: 0
+  }
+};
 
-var vertexShader = 'attribute float displacement;' +
+var vertexShader = 'uniform float amplitude;' +
+  'attribute float displacement;' +
   'varying vec3 vNormal;' +
   'void main() {' +
     'vNormal = normal;' +
     'vec3 newPosition = position + ' +
       'normal *' +
-      'vec3(displacement);' +
+      'vec3(displacement * amplitude);' +
     'gl_Position = projectionMatrix *' +
       'modelViewMatrix *' +
       'vec4(newPosition,1.0);' +
@@ -35,12 +42,14 @@ for(var v = 0; v < geometry.vertices.length; v++) {
 }
 
 var shaderMaterial = new THREE.ShaderMaterial({
+  uniforms: uniforms,
   attributes: attributes,
   vertexShader: vertexShader,
   fragmentShader: fragmentShader
 });
 
-
-module.exports = function() {
-  return new THREE.Mesh(geometry, shaderMaterial);
+var sphere = new THREE.Mesh(geometry, shaderMaterial);
+module.exports.sphere = sphere;
+module.exports.compute = function(t) {
+  uniforms.amplitude.value = Math.sin(t) * 2;
 };
