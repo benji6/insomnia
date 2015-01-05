@@ -19,12 +19,14 @@ module.exports = function() {
 },{"three":6}],2:[function(require,module,exports){
 var THREE = require('three');
 
-var sphereMaterial = new THREE.MeshPhongMaterial({
+var material = new THREE.MeshPhongMaterial({
   color: 0xCCEE00
 });
 
+var geometry = new THREE.SphereGeometry(8, 32, 32);
+
 module.exports = function() {
-  return new THREE.Mesh(new THREE.SphereGeometry(8, 32, 32),sphereMaterial);
+  return new THREE.Mesh(geometry, material);
 };
 
 },{"three":6}],3:[function(require,module,exports){
