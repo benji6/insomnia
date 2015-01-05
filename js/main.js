@@ -31,16 +31,14 @@ scene.add(light.directionalLight);
 var isRunning;
 
 var computeModel = function() {
-	//dev need to start using tinytic.toc(500) for rotation etc
 	var coords;
-	var phi;
 	var dT = tinytic.toc(500);
 	for (var i = 0; i < totalCubes; i++) {
 		coords = computeCubePosition(i, dT, totalCubes, orbitRadius);
 		cubes[i].position.set(coords.x, coords.y, coords.z);
-		cubes[i].rotation.x += 0.1;
-		cubes[i].rotation.y += 0.03;
-		cubes[i].rotation.z += 0.07;
+		cubes[i].rotation.x += dT / 256 * 1;
+		cubes[i].rotation.y += dT / 256 * 0.3;
+		cubes[i].rotation.z += dT / 256 * 0.7;
 	}
 	sphere.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
 };
