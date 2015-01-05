@@ -2,7 +2,7 @@ var THREE = require('three');
 var tinytic = require('tinytic');
 
 var Cube = require('./lib/Cube.js');
-var Sphere = require('./lib/Sphere.js');
+var sphere = require('./lib/sphere.js');
 var light = require('./lib/light.js');
 var computeCubePosition = require('./lib/computeCubePosition.js');
 
@@ -15,7 +15,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.domElement.className = "fullscreen";
 document.body.appendChild(renderer.domElement);
 
-var sphere = Sphere.sphere;
 var cubes = [];
 var totalCubes = 64;
 var orbitRadius = 16;
@@ -24,7 +23,7 @@ for (var i = 0; i < totalCubes; i++) {
 	cubes[i] = Cube();
 	scene.add(cubes[i]);
 }
-scene.add(sphere);
+scene.add(sphere.model);
 scene.add(light.ambientLight);
 scene.add(light.directionalLight);
 
@@ -40,11 +39,11 @@ var computeModel = function() {
 		cubes[i].rotation.y += dT / 256 * 0.3;
 		cubes[i].rotation.z += dT / 256 * 0.7;
 	}
-	sphere.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
-	Sphere.compute(tinytic.total() / 12288);
-	sphere.rotation.x += dT / 256 * 0.13;
-	sphere.rotation.y += dT / 256 * 0.06;
-	sphere.rotation.yz += dT / 256 * 0.1;
+	sphere.model.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
+	sphere.compute(tinytic.total() / 12288);
+	sphere.model.rotation.x += dT / 256 * 0.13;
+	sphere.model.rotation.y += dT / 256 * 0.06;
+	sphere.model.rotation.yz += dT / 256 * 0.1;
 };
 
 var animationLoop = function animationLoop() {
