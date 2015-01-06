@@ -2,7 +2,7 @@ var THREE = require('three');
 var tinytic = require('tinytic');
 
 var Cube = require('./lib/Cube.js');
-var sphere = require('./lib/sphere.js');
+var sphere = require('./lib/sphere/sphere.js');
 var light = require('./lib/light.js');
 var computeCubePosition = require('./lib/computeCubePosition.js');
 

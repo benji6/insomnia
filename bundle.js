@@ -45,15 +45,6 @@ module.exports = function(i, dT, totalCubes, orbitRadius) {
 };
 
 },{}],3:[function(require,module,exports){
-module.exports = 'varying vec3 vNormal;' +
-'void main() {' +
-'vec3 light = vec3(0.5,0.2,1.0);' +
-'light = normalize(light);' +
-'float dProd = max(0.0, dot(vNormal, light));' +
-'gl_FragColor = vec4(dProd, dProd, dProd, 1.0);' +
-'}';
-
-},{}],4:[function(require,module,exports){
 var THREE = require('three');
 
 var directionalLight = new THREE.DirectionalLight(0xffffff);
@@ -62,7 +53,16 @@ directionalLight.position.set(8, 8, 4).normalize();
 module.exports.ambientLight = new THREE.AmbientLight(0x000044);
 module.exports.directionalLight = directionalLight;
 
-},{"three":8}],5:[function(require,module,exports){
+},{"three":8}],4:[function(require,module,exports){
+module.exports = 'varying vec3 vNormal;' +
+'void main() {' +
+'vec3 light = vec3(0.5,0.2,1.0);' +
+'light = normalize(light);' +
+'float dProd = max(0.0, dot(vNormal, light));' +
+'gl_FragColor = vec4(dProd, dProd, dProd, 1.0);' +
+'}';
+
+},{}],5:[function(require,module,exports){
 var THREE = require('three');
 
 var vertexShader = require('./vertexShader.js');
@@ -83,7 +83,6 @@ var uniforms = {
   }
 };
 
-console.log(geometry.vertices.length);
 for(var v = 0; v < geometry.vertices.length; v++) {
   attributes.displacement.value.push((1 - Math.random()) * 2);
 }
@@ -101,7 +100,7 @@ module.exports.compute = function(t) {
   uniforms.amplitude.value = Math.sin(t) * 2;
 };
 
-},{"./fragmentShader.js":3,"./vertexShader.js":6,"three":8}],6:[function(require,module,exports){
+},{"./fragmentShader.js":4,"./vertexShader.js":6,"three":8}],6:[function(require,module,exports){
 module.exports = 'uniform float amplitude;' +
 'attribute float displacement;' +
 'varying vec3 vNormal;' +
@@ -120,7 +119,7 @@ var THREE = require('three');
 var tinytic = require('tinytic');
 
 var Cube = require('./lib/Cube.js');
-var sphere = require('./lib/sphere.js');
+var sphere = require('./lib/sphere/sphere.js');
 var light = require('./lib/light.js');
 var computeCubePosition = require('./lib/computeCubePosition.js');
 
@@ -187,7 +186,7 @@ window.insomnia = {
 };
 window.insomnia.on();
 
-},{"./lib/Cube.js":1,"./lib/computeCubePosition.js":2,"./lib/light.js":4,"./lib/sphere.js":5,"three":8,"tinytic":9}],8:[function(require,module,exports){
+},{"./lib/Cube.js":1,"./lib/computeCubePosition.js":2,"./lib/light.js":3,"./lib/sphere/sphere.js":5,"three":8,"tinytic":9}],8:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
