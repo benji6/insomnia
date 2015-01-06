@@ -54,13 +54,13 @@ module.exports.ambientLight = new THREE.AmbientLight(0x000044);
 module.exports.directionalLight = directionalLight;
 
 },{"three":8}],4:[function(require,module,exports){
-module.exports = 'varying vec3 vNormal;' +
-'void main() {' +
-'vec3 light = vec3(0.5,0.2,1.0);' +
-'light = normalize(light);' +
-'float dProd = max(0.0, dot(vNormal, light));' +
-'gl_FragColor = vec4(dProd, dProd, dProd, 1.0);' +
-'}';
+module.exports = 'varying vec3 vNormal;\
+void main() {\
+vec3 light = vec3(0.5,0.2,1.0);\
+light = normalize(light);\
+float dProd = max(0.0, dot(vNormal, light));\
+gl_FragColor = vec4(dProd, dProd, dProd, 1.0);\
+}';
 
 },{}],5:[function(require,module,exports){
 var THREE = require('three');
@@ -101,18 +101,18 @@ module.exports.compute = function(t) {
 };
 
 },{"./fragmentShader.js":4,"./vertexShader.js":6,"three":8}],6:[function(require,module,exports){
-module.exports = 'uniform float amplitude;' +
-'attribute float displacement;' +
-'varying vec3 vNormal;' +
-'void main() {' +
-'vNormal = normal;' +
-'vec3 newPosition = position + ' +
-'normal *' +
-'vec3(displacement * amplitude);' +
-'gl_Position = projectionMatrix *' +
-'modelViewMatrix *' +
-'vec4(newPosition,1.0);' +
-'}';
+module.exports = 'uniform float amplitude;\
+attribute float displacement;\
+varying vec3 vNormal;\
+void main() {\
+vNormal = normal;\
+vec3 newPosition = position + \
+normal *\
+vec3(displacement * amplitude);\
+gl_Position = projectionMatrix *\
+modelViewMatrix *\
+vec4(newPosition,1.0);\
+}';
 
 },{}],7:[function(require,module,exports){
 var THREE = require('three');
