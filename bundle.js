@@ -54,67 +54,43 @@ module.exports.ambientLight = new THREE.AmbientLight(0x000044);
 module.exports.directionalLight = directionalLight;
 
 },{"three":8}],4:[function(require,module,exports){
-module.exports = 'varying vec3 vNormal;\
-void main() {\
-vec3 light = vec3(0.5,0.2,1.0);\
-light = normalize(light);\
-float dProd = max(0.0, dot(vNormal, light));\
-gl_FragColor = vec4(dProd, dProd, dProd, 1.0);\
-}';
-
-},{}],5:[function(require,module,exports){
-var THREE = require('three');
-
-var vertexShader = require('./vertexShader.js');
-var fragmentShader = require('./fragmentShader.js');
-
+var THREE = require("three");
+var glslify = require("glslify");
 var geometry = new THREE.SphereGeometry(4, 32, 32);
+var myShader = require("glslify/simple-adapter.js")("\n#define GLSLIFY 1\n\nuniform float amplitude;\nattribute float displacement;\nvarying vec3 vNormal;\nvoid main() {\n  vNormal = normal;\n  vec3 newPosition = position + normal * vec3(displacement * amplitude);\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);\n}", "\n#define GLSLIFY 1\n\nvarying vec3 vNormal;\nvoid main() {\n  vec3 light = vec3(0.5, 0.2, 1.0);\n  light = normalize(light);\n  float dProd = max(0.0, dot(vNormal, light));\n  gl_FragColor = vec4(dProd, dProd, dProd, 1.0);\n}", [{"name":"amplitude","type":"float"}], [{"name":"displacement","type":"float"}]);
 
 var attributes = {
-  displacement: {
-    type: 'f', // a float
-    value: [] // an empty array
-  }
-};
-var uniforms = {
-  amplitude: {
-    type: 'f', // a float
-    value: 0
-  }
+    displacement: {
+        type: "f",
+        value: []
+    }
 };
 
-for(var v = 0; v < geometry.vertices.length; v++) {
-  attributes.displacement.value.push((1 - Math.random()) * 2);
+var uniforms = {
+    amplitude: {
+        type: "f",
+        value: 0
+    }
+};
+
+for (var v = 0; v < geometry.vertices.length; v++) {
+    attributes.displacement.value.push((1 - Math.random()) * 2);
 }
 
 var shaderMaterial = new THREE.ShaderMaterial({
-  uniforms: uniforms,
-  attributes: attributes,
-  vertexShader: vertexShader,
-  fragmentShader: fragmentShader
+    uniforms: uniforms,
+    attributes: attributes,
+    vertexShader: myShader.vertex,
+    fragmentShader: myShader.fragment
 });
 
 var sphere = new THREE.Mesh(geometry, shaderMaterial);
 module.exports.model = sphere;
+
 module.exports.compute = function(t) {
-  uniforms.amplitude.value = Math.sin(t) * 2;
+    uniforms.amplitude.value = Math.sin(t) * 2;
 };
-
-},{"./fragmentShader.js":4,"./vertexShader.js":6,"three":8}],6:[function(require,module,exports){
-module.exports = 'uniform float amplitude;\
-attribute float displacement;\
-varying vec3 vNormal;\
-void main() {\
-vNormal = normal;\
-vec3 newPosition = position + \
-normal *\
-vec3(displacement * amplitude);\
-gl_Position = projectionMatrix *\
-modelViewMatrix *\
-vec4(newPosition,1.0);\
-}';
-
-},{}],7:[function(require,module,exports){
+},{"glslify":6,"glslify/simple-adapter.js":7,"three":8}],5:[function(require,module,exports){
 var THREE = require('three');
 var tinytic = require('tinytic');
 
@@ -186,7 +162,29 @@ window.insomnia = {
 };
 window.insomnia.on();
 
-},{"./lib/Cube.js":1,"./lib/computeCubePosition.js":2,"./lib/light.js":3,"./lib/sphere/sphere.js":5,"three":8,"tinytic":9}],8:[function(require,module,exports){
+},{"./lib/Cube.js":1,"./lib/computeCubePosition.js":2,"./lib/light.js":3,"./lib/sphere/sphere.js":4,"three":8,"tinytic":9}],6:[function(require,module,exports){
+module.exports = noop
+
+function noop() {
+  throw new Error(
+      'You should bundle your code ' +
+      'using `glslify` as a transform.'
+  )
+}
+
+},{}],7:[function(require,module,exports){
+module.exports = programify
+
+function programify(vertex, fragment, uniforms, attributes) {
+  return {
+    vertex: vertex, 
+    fragment: fragment,
+    uniforms: uniforms, 
+    attributes: attributes
+  };
+}
+
+},{}],8:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -34958,4 +34956,4 @@ module.exports.reset = function() {
 	t0 = then = now = getNow();
 };
 
-},{}]},{},[7]);
+},{}]},{},[5]);

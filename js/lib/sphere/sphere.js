@@ -1,16 +1,21 @@
 var THREE = require('three');
-
-var vertexShader = require('./vertexShader.js');
-var fragmentShader = require('./fragmentShader.js');
+var glslify = require('glslify');
 
 var geometry = new THREE.SphereGeometry(4, 32, 32);
+
+var myShader = glslify({
+  vertex: './vertexShader.glsl',
+  fragment: './fragmentShader.glsl',
+  sourceOnly: true
+});
 
 var attributes = {
   displacement: {
     type: 'f', // a float
-    value: [] // an empty array
+    value: []
   }
 };
+
 var uniforms = {
   amplitude: {
     type: 'f', // a float
@@ -25,8 +30,8 @@ for(var v = 0; v < geometry.vertices.length; v++) {
 var shaderMaterial = new THREE.ShaderMaterial({
   uniforms: uniforms,
   attributes: attributes,
-  vertexShader: vertexShader,
-  fragmentShader: fragmentShader
+  vertexShader: myShader.vertex,
+  fragmentShader: myShader.fragment
 });
 
 var sphere = new THREE.Mesh(geometry, shaderMaterial);

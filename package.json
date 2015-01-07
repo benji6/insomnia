@@ -17,8 +17,14 @@
     "url": "https://github.com/benji6/insomnia/issues"
   },
   "homepage": "https://github.com/benji6/insomnia",
+  "browserify": {
+  	"transform": [
+  	  "glslify"
+  	]
+  },
   "dependencies": {
     "browserify": "^7.0.1",
+    "glslify": "^1.6.0",
     "three": "^0.69.0",
     "tinytic": "^1.0.0"
   }
