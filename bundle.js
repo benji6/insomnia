@@ -57,7 +57,7 @@ module.exports.directionalLight = directionalLight;
 var THREE = require("three");
 var glslify = require("glslify");
 var geometry = new THREE.SphereGeometry(4, 32, 32);
-var myShader = require("glslify/simple-adapter.js")("\n#define GLSLIFY 1\n\nuniform float amplitude;\nattribute float displacement;\nvarying vec3 vNormal;\nvoid main() {\n  vNormal = normal;\n  vec3 newPosition = position + normal * vec3(displacement * amplitude);\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);\n}", "\n#define GLSLIFY 1\n\nvarying vec3 vNormal;\nvoid main() {\n  vec3 light = vec3(0.5, 0.2, 1.0);\n  light = normalize(light);\n  float dProd = max(0.0, dot(vNormal, light));\n  gl_FragColor = vec4(dProd, dProd, dProd, 1.0);\n}", [{"name":"amplitude","type":"float"}], [{"name":"displacement","type":"float"}]);
+var myShader = require("glslify/simple-adapter.js")("\n#define GLSLIFY 1\n\nuniform float amplitude;\nattribute float displacement;\nvarying vec3 vNormal;\nvoid main() {\n  vNormal = normal;\n  vec3 newPosition = position + normal * vec3(displacement * amplitude);\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);\n}", "\n#define GLSLIFY 1\n\nvarying vec3 vNormal;\nuniform vec3 color;\nvoid main() {\n  vec3 light = vec3(0.5, 0.2, 1.0);\n  light = normalize(light);\n  float dProd = dot(vNormal, light) * 0.5 + 0.5;\n  gl_FragColor = vec4(vec3(dProd) * vec3(color), 1.0);\n}", [{"name":"amplitude","type":"float"},{"name":"color","type":"vec3"}], [{"name":"displacement","type":"float"}]);
 
 var attributes = {
     displacement: {
@@ -70,10 +70,17 @@ var uniforms = {
     amplitude: {
         type: "f",
         value: 0
+    },
+
+    color: {
+        type: "c",
+        value: new THREE.Color(13373934)
     }
 };
 
-for (var v = 0; v < geometry.vertices.length; v++) {
+var v;
+
+for (v = 0; v < geometry.vertices.length; v++) {
     attributes.displacement.value.push((1 - Math.random()) * 2);
 }
 
@@ -87,8 +94,13 @@ var shaderMaterial = new THREE.ShaderMaterial({
 var sphere = new THREE.Mesh(geometry, shaderMaterial);
 module.exports.model = sphere;
 
-module.exports.compute = function(t) {
-    uniforms.amplitude.value = Math.sin(t) * 2;
+module.exports.compute = function(dT, totalT) {
+    uniforms.color.value.offsetHSL(dT / 16384, 0, 0);
+    uniforms.amplitude.value = Math.sin(totalT / 12288) * 2;
+    sphere.rotation.x += dT / 256 * 0.13;
+    sphere.rotation.y += dT / 256 * 0.06;
+    sphere.rotation.z += dT / 256 * 0.1;
+    sphere.position.set(0, 0, Math.sin(totalT / 4096) * 48);
 };
 },{"glslify":6,"glslify/simple-adapter.js":7,"three":8}],5:[function(require,module,exports){
 var THREE = require('three');
@@ -132,11 +144,7 @@ var computeModel = function() {
 		cubes[i].rotation.y += dT / 256 * 0.3;
 		cubes[i].rotation.z += dT / 256 * 0.7;
 	}
-	sphere.model.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
-	sphere.compute(tinytic.total() / 12288);
-	sphere.model.rotation.x += dT / 256 * 0.13;
-	sphere.model.rotation.y += dT / 256 * 0.06;
-	sphere.model.rotation.yz += dT / 256 * 0.1;
+	sphere.compute(dT, tinytic.total());
 };
 
 var animationLoop = function animationLoop() {

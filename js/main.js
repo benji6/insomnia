@@ -39,11 +39,7 @@ var computeModel = function() {
 		cubes[i].rotation.y += dT / 256 * 0.3;
 		cubes[i].rotation.z += dT / 256 * 0.7;
 	}
-	sphere.model.position.set(0, 0, Math.sin(tinytic.total() / 4096) * 32);
-	sphere.compute(tinytic.total() / 12288);
-	sphere.model.rotation.x += dT / 256 * 0.13;
-	sphere.model.rotation.y += dT / 256 * 0.06;
-	sphere.model.rotation.yz += dT / 256 * 0.1;
+	sphere.compute(dT, tinytic.total());
 };
 
 var animationLoop = function animationLoop() {
