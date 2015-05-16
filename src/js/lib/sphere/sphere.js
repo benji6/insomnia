@@ -1,7 +1,7 @@
 var THREE = require('three');
 var glslify = require('glslify');
 
-var geometry = new THREE.SphereGeometry(4, 32, 32);
+var geometry = new THREE.IcosahedronGeometry(4, 4);
 
 var attributes = {
   displacement: {
